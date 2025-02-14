@@ -1,1 +1,27 @@
-
+{
+    "version": 2,
+    "builds": [
+        {
+            "src": "dir/image_to_video.py",
+            "use": "@vercel/python"
+        },
+        {
+            "src": "image_to_video.html",
+            "use": "@vercel/static"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/api/image-to-video",
+            "dest": "dir/image_to_video.py"
+        },
+        {
+            "src": "/image_to_video.html",
+            "dest": "image_to_video.html"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "/$1"
+        }
+    ]
+} 
