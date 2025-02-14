@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image to Video Converter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        background: linear-gradient(to bottom, #000044, #000033, #000066);
+        color: white;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        position: relative;
+        overflow-x: hidden;
+        overflow-y: visible;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 4rem 2rem;
+        position: relative;
+        z-index: 10;
+        overflow: visible;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 3rem;
+      }
+
+      .header h1 {
+        font-size: 5rem;
+        font-weight: normal;
+        margin-bottom: 1rem;
+        font-family: 'DM Serif Display', serif;
+      }
+
+      .foreground-stars {
+        font-size: 2.5rem;
+        margin: 1rem 0;
+        display: flex;
+        justify-content: center;
+        z-index: 2;
+      }
+
+      .background-stars {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      .converter-container {
+        max-width: 48rem;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(8px);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        min-height: 500px;
+        height: auto;
+        overflow: visible;
+      }
+
+      .input-container {
+        margin-bottom: 2rem;
+      }
+
+      .file-input-container {
+        margin-bottom: 1.5rem;
+      }
+
+      .file-input-label {
+        display: block;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px dashed rgba(255, 255, 255, 0.3);
+        border-radius: 0.5rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .file-input-label:hover {
+        background: rgba(255, 255, 255, 0.15);
+      }
+
+      .file-input {
+        display: none;
+      }
+
+      .textarea {
+        width: 100%;
+        min-height: 120px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 0.5rem;
+        color: white;
+        font-size: 1rem;
+        resize: vertical;
+      }
+
+      .duration-input {
+        width: 100%;
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 0.5rem;
+        color: white;
+        font-size: 1rem;
+      }
+
+      .button {
+        width: 100%;
+        padding: 0.75rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        border-radius: 0.5rem;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .button:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      .button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .preview-container {
+        margin-top: 2rem;
+        text-align: center;
+      }
+
+      .preview-image {
+        max-width: 100%;
+        max-height: 300px;
+        border-radius: 0.5rem;
+        display: none;
+      }
+
+      .loading {
+        display: none;
+        margin: 1rem auto;
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        border-top: 4px solid white;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
+      .status-message {
+        margin-top: 1rem;
+        text-align: center;
+        font-size: 1.1rem;
+      }
+
+      @media (max-width: 768px) {
+        .header h1 {
+          font-size: 3rem;
+        }
+
+        .container {
+          padding: 2rem 1rem;
+        }
+      }
+
+      .star {
+        position: absolute;
+        width: 2px;
+        height: 2px;
+        background: white;
+        border-radius: 50%;
+      }
+
+      @keyframes twinkle {
+        0%, 100% {
+          opacity: 0.2;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="background-stars" id="starsContainer"></div>
+
+    <div class="container">
+      <header class="header">
+        <h1>DUB5</h1>
+        <h1>Image to Video</h1>
+        <div class="foreground-stars">
+          ★★★★★
+        </div>
+      </header>
+
+      <main class="converter-container">
+        <div class="input-container">
+          <div class="file-input-container">
+            <label class="file-input-label">
+              <input type="file" class="file-input" id="imageInput" accept="image/*">
+              Click to upload image or drag and drop
+            </label>
+          </div>
+
+          <textarea 
+            id="textInput" 
+            class="textarea" 
+            placeholder="Enter text to add to video..."
+            rows="3"
+          ></textarea>
+
+          <input 
+            type="number" 
+            id="durationInput" 
+            class="duration-input" 
+            placeholder="Duration in seconds (default: 5)"
+            min="1"
+            max="30"
+          >
+          
+          <button 
+            id="convertButton" 
+            class="button"
+            onclick="handleConversion()"
+          >
+            Convert to Video
+          </button>
+
+          <div class="loading" id="loadingIndicator"></div>
+          <div class="status-message" id="statusMessage"></div>
+        </div>
+
+        <div class="preview-container">
+          <img id="previewImage" class="preview-image" alt="Preview">
+          <video id="outputVideo" style="display: none; max-width: 100%; margin-top: 1rem;" controls></video>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      // Generate stars background
+      function generateStars() {
+        const container = document.getElementById('starsContainer');
+        const numberOfStars = 200;
+
+        for (let i = 0; i < numberOfStars; i++) {
+          const star = document.createElement('div');
+          star.className = 'star';
+          star.style.left = `${Math.random() * 100}%`;
+          star.style.top = `${Math.random() * 100}%`;
+          star.style.animation = `twinkle ${2 + Math.random() * 3}s infinite ${Math.random() * 2}s`;
+          container.appendChild(star);
+        }
+      }
+
+      // Preview image when selected
+      document.getElementById('imageInput').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            const previewImage = document.getElementById('previewImage');
+            previewImage.src = e.target.result;
+            previewImage.style.display = 'block';
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      // Handle drag and drop
+      const dropZone = document.querySelector('.file-input-label');
+      
+      dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.style.background = 'rgba(255, 255, 255, 0.2)';
+      });
+
+      dropZone.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        dropZone.style.background = 'rgba(255, 255, 255, 0.1)';
+      });
+
+      dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.style.background = 'rgba(255, 255, 255, 0.1)';
+        
+        const file = e.dataTransfer.files[0];
+        if (file && file.type.startsWith('image/')) {
+          document.getElementById('imageInput').files = e.dataTransfer.files;
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            const previewImage = document.getElementById('previewImage');
+            previewImage.src = e.target.result;
+            previewImage.style.display = 'block';
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      async function handleConversion() {
+        const imageInput = document.getElementById('imageInput');
+        const textInput = document.getElementById('textInput');
+        const durationInput = document.getElementById('durationInput');
+        const button = document.getElementById('convertButton');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const statusMessage = document.getElementById('statusMessage');
+
+        if (!imageInput.files[0]) {
+          alert("Please select an image.");
+          return;
+        }
+
+        if (!textInput.value.trim()) {
+          alert("Please enter text to add to the video.");
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append('image', imageInput.files[0]);
+        formData.append('text', textInput.value);
+        formData.append('duration', durationInput.value || '5');
+
+        button.disabled = true;
+        loadingIndicator.style.display = 'block';
+        statusMessage.textContent = 'Converting...';
+
+        try {
+          const response = await fetch('https://chatbot-beta-weld.vercel.app/api/image-to-video', {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'Origin': window.location.origin,
+              'Access-Control-Allow-Origin': '*'
+            },
+            mode: 'cors',
+            credentials: 'omit',
+            body: formData
+          });
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Conversion failed: ${errorText}`);
+          }
+
+          const data = await response.json();
+          
+          // Create an image element instead of video
+          const container = document.getElementById('outputVideo');
+          container.style.display = 'block';
+          container.src = data.video_data;
+          
+          statusMessage.textContent = 'Conversion completed successfully!';
+        } catch (error) {
+          console.error('Error details:', error);
+          statusMessage.textContent = 'Error: ' + error.message;
+        } finally {
+          button.disabled = false;
+          loadingIndicator.style.display = 'none';
+        }
+      }
+
+      // Initialize stars on load
+      generateStars();
+
+      // Add keyboard shortcut for conversion
+      document.addEventListener('keydown', (event) => {
+        if (event.ctrlKey && event.key === 'Enter') {
+          handleConversion();
+        }
+      });
+    </script>
+  </body>
+</html>
