@@ -15,10 +15,9 @@
             "src": "/api/image-to-video",
             "dest": "dir/image_to_video.py",
             "headers": {
-                "Access-Control-Allow-Origin": "https://img-to-video.vercel.app",
-                "Access-Control-Allow-Methods": "POST, OPTIONS",
-                "Access-Control-Allow-Headers": "Content-Type",
-                "Access-Control-Allow-Credentials": "true"
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+                "Access-Control-Allow-Headers": "*"
             }
         },
         {
