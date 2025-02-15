@@ -357,10 +357,6 @@
         try {
           const response = await fetch('https://chatbot-beta-weld.vercel.app/api/image-to-video', {
             method: 'POST',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'multipart/form-data'
-            },
             mode: 'cors',
             body: formData
           });
