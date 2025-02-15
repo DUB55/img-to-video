@@ -363,6 +363,7 @@
 
           if (!response.ok) {
             const errorText = await response.text();
+            console.error('Server response:', errorText);
             throw new Error(`Conversion failed: ${errorText}`);
           }
 
@@ -376,9 +377,8 @@
           statusMessage.textContent = 'Conversion completed successfully!';
         } catch (error) {
           console.error('Error details:', error);
-          // More descriptive error message
           if (error.message.includes('Failed to fetch')) {
-            statusMessage.textContent = 'Connection error: Please check your internet connection or try again later.';
+            statusMessage.textContent = 'Connection error: Please try again in a few moments.';
           } else {
             statusMessage.textContent = 'Error: ' + error.message;
           }
