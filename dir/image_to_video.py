@@ -11,10 +11,11 @@ app = FastAPI()
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://127.0.0.1:5500"],  # Specific origin instead of wildcard
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"]
+    allow_methods=["OPTIONS", "POST", "GET"],
+    allow_headers=["Content-Type", "Origin", "Accept"],
+    max_age=86400
 )
 
 def create_frame(image: Image.Image, text: str, frame_number: int, total_frames: int) -> Image.Image:
