@@ -11,14 +11,10 @@ app = FastAPI()
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://127.0.0.1:5500",
-        "https://img-to-video.vercel.app",
-        "https://chatbot-beta-weld.vercel.app"
-    ],
+    allow_origins=["https://img-to-video.vercel.app"],
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["POST", "OPTIONS"],
+    allow_headers=["Content-Type"],
     expose_headers=["*"]
 )
 
