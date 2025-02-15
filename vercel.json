@@ -12,13 +12,14 @@
     ],
     "routes": [
         {
-            "src": "/api/image-to-video",
+            "src": "/api/(.*)",
             "dest": "dir/image_to_video.py",
-            "methods": ["GET", "POST", "OPTIONS"],
+            "methods": ["OPTIONS", "POST", "GET"],
             "headers": {
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-                "Access-Control-Allow-Headers": "*",
+                "Access-Control-Allow-Origin": "http://127.0.0.1:5500",
+                "Access-Control-Allow-Methods": "OPTIONS, POST, GET",
+                "Access-Control-Allow-Headers": "Content-Type, Origin, Accept",
+                "Access-Control-Allow-Credentials": "true",
                 "Access-Control-Max-Age": "86400"
             }
         },
