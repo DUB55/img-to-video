@@ -355,10 +355,8 @@
         statusMessage.textContent = 'Converting...';
 
         try {
-          const response = await fetch('https://chatbot-beta-weld.vercel.app/api/image-to-video', {
+          const response = await fetch('/api/image-to-video', {
             method: 'POST',
-            mode: 'cors',
-            credentials: 'include',
             body: formData
           });
 
