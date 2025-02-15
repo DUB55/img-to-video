@@ -14,10 +14,11 @@
         {
             "src": "/api/image-to-video",
             "dest": "dir/image_to_video.py",
+            "methods": ["POST", "OPTIONS"],
             "headers": {
                 "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
-                "Access-Control-Allow-Headers": "*"
+                "Access-Control-Allow-Methods": "POST, OPTIONS",
+                "Access-Control-Allow-Headers": "Content-Type"
             }
         },
         {
