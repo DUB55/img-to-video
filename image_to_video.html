@@ -359,8 +359,9 @@
             method: 'POST',
             headers: {
               'Accept': 'application/json',
-              'Origin': window.location.origin
+              'Content-Type': 'multipart/form-data'
             },
+            mode: 'cors',
             body: formData
           });
 
@@ -371,7 +372,7 @@
 
           const data = await response.json();
           
-          // Create an image element instead of video
+          // Display the result
           const container = document.getElementById('outputVideo');
           container.style.display = 'block';
           container.src = data.video_data;
@@ -379,7 +380,12 @@
           statusMessage.textContent = 'Conversion completed successfully!';
         } catch (error) {
           console.error('Error details:', error);
-          statusMessage.textContent = 'Error: ' + error.message;
+          // More descriptive error message
+          if (error.message.includes('Failed to fetch')) {
+            statusMessage.textContent = 'Connection error: Please check your internet connection or try again later.';
+          } else {
+            statusMessage.textContent = 'Error: ' + error.message;
+          }
         } finally {
           button.disabled = false;
           loadingIndicator.style.display = 'none';
