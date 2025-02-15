@@ -12,13 +12,12 @@
     ],
     "routes": [
         {
-            "src": "/api/(.*)",
+            "src": "/api/image-to-video",
             "dest": "dir/image_to_video.py",
-            "methods": ["OPTIONS", "POST", "GET"],
             "headers": {
                 "Access-Control-Allow-Origin": "https://img-to-video.vercel.app",
-                "Access-Control-Allow-Methods": "*",
-                "Access-Control-Allow-Headers": "*",
+                "Access-Control-Allow-Methods": "POST, OPTIONS",
+                "Access-Control-Allow-Headers": "Content-Type",
                 "Access-Control-Allow-Credentials": "true"
             }
         },
