@@ -93,6 +93,16 @@ async def create_video(
             content={"detail": str(e)}
         )
 
+@app.options("/api/image-to-video")
+async def options_handler():
+    return JSONResponse(
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "POST, OPTIONS",
+            "Access-Control-Allow-Headers": "*"
+        }
+    )
+
 @app.get("/")
 async def root():
     return {"status": "ok"}
