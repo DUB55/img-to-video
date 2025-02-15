@@ -357,12 +357,11 @@
         try {
           const response = await fetch('https://chatbot-beta-weld.vercel.app/api/image-to-video', {
             method: 'POST',
-            headers: {
-              'Accept': '*/*',
-              'Access-Control-Allow-Origin': '*'
-            },
             mode: 'cors',
-            credentials: 'omit',
+            credentials: 'include',
+            headers: {
+              'Origin': 'http://127.0.0.1:5500'
+            },
             body: formData
           });
 
@@ -370,7 +369,6 @@
             const errorText = await response.text();
             console.error('Server response:', errorText);
             console.error('Response status:', response.status);
-            console.error('Response headers:', [...response.headers.entries()]);
             throw new Error(`Conversion failed: ${errorText}`);
           }
 
